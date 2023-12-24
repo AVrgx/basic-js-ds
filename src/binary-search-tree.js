@@ -6,41 +6,113 @@ const { NotImplementedError } = require('../extensions/index.js');
 * Implement simple binary search tree according to task description
 * using Node from extensions
 */
+class Node {
+  constructor(data) {
+      this.data = data;
+      this.left = null;
+      this.right = null;
+  }
+}
+
+
 class BinarySearchTree {
+  constructor() {
+      this.head = null;
+  }
 
   root() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+      return this.head;
   }
 
-  add(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  add(data) {
+      const node = new Node(data);
+      if (!this.head) {
+          this.head = node
+          return
+      }
+
+      let currentNode = this.head
+      while (currentNode) {
+          if (node.data < currentNode.data) {
+              if (!currentNode.left) {
+                  currentNode.left = node
+                  return
+              }
+              currentNode = currentNode.left
+          } else {
+              if (!currentNode.right) {
+                  currentNode.right = node
+                  return
+              }
+              currentNode = currentNode.right
+          }
+      }
+
   }
 
-  has(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  findNode(node, data) {
+      if (!node) {
+          return null
+      }
+      if (data === node.data) {
+          return node
+      } else if (data < node.data) {
+          return this.findNode(node.left, data)
+      } else return this.findNode(node.right, data)
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  has(data) {
+      return this.findNode(this.head, data) !== null
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  find(data) {
+      return this.findNode(this.head, data)
+  }
+
+
+  deleteRecursive(node, data) {
+      if (node === null) return node
+      if (data < node.data) {
+          node.left = this.deleteRecursive(node.left, data)
+      } else if (data > node.data)
+          node.right = this.deleteRecursive(node.right, data);
+      else {
+          if (node.left == null)
+              return node.right;
+          else if (node.right == null)
+              return node.left;
+          node.data = this.minimumValue(node.right);
+          node.right = this.deleteRecursive(node.right, node.data);
+      }
+      return node;
+  }
+  minimumValue(node) {
+      let minValue = node.data
+      while (node.left != null) {
+          minValue = node.left.data
+          node = node.left
+      }
+      return minValue
+  }
+  remove(data) {
+      if (this.head === null) return null
+      this.head = this.deleteRecursive(this.head, data)
   }
 
   min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+      let node = this.head;
+      while (node.left) {
+          node = node.left;
+      }
+      return node.data;
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+      let node = this.head;
+      while (node.right) {
+          node = node.right;
+      }
+      return node.data;
   }
 }
 
